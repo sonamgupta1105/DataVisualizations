@@ -1,0 +1,69 @@
+---
+title: "Assignment 4"
+subtitle: "Exploratory Data Analysis"
+author: "Sonam Gupta"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+The final document should be converted using the `knitr` package to an `.html` file and submitted via Moodle for evaluation.  Remember to properly name your file as: `YourName_ANLY512-50_SU2016.html`.
+
+## EDA
+Not many outliers
+kms, as in the distance covered was not clear if it is the millions of kms or annually estimated distance covered by each of the drivers.
+
+```{r}
+# Packages used
+library(ggplot2)
+library(dplyr)
+```
+Using Seatbelts dataset that comes with R. The reference is : https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UKDriverDeaths.html
+
+The first step before any analysis was to look at the summary of the dataframe. The summary gives a basic idea about the dataset. The first graph I created was to see how many drivers were killed/died with the law being in effect and not in effect. To look at this graph, I don't see any significant outcome to read it from. 
+```{r}
+dfSeatbelts <- data.frame(Seatbelts)
+summary(dfSeatbelts)
+lawChar <- as.character(dfSeatbelts$law) #turning the binary 0 & 1 into character so that the scale on x-axis does not get messed up
+killedLawEffect <- ggplot(dfSeatbelts, aes(lawChar, DriversKilled, fill = lawChar))
+killedLawEffect + geom_bar(stat = "identity", width = .2) + scale_y_continuous(limits = c(0, 200))
+```
+
+```{r}
+dfSeatbelts$time <- time(Seatbelts) #attaches the time column
+dfSeatbelts$year <- floor(dfSeatbelts$time) # attaches the year column to the dataframe with floored values
+```
+The Seatbelts data not only gives information about law and its effects on deaths of drivers, but also gives a pattern of how much the drivers drove with petrol prices in 1900s. I created a scatterplot to see the trend in kms covered and petrol prices. To conclude, the drivers mostly drove in the range of 12000 to 18000kms with petrol prices rising from 0.09 to 0.12
+
+```{r}
+kmPetrol <- ggplot(dfSeatbelts, aes(kms, PetrolPrice)) + ggtitle("Distance covered by drivers against the petrol prices")
+kmPetrol + geom_point()
+```
+
+Next exploration was to see whether front seat passengers death decreased after the seatbelt law was enabled and from the plot, it seems the amount of death of front seat passengers did decrease as the law was compulsated.
+```{r}
+frontYear <- ggplot(dfSeatbelts, aes(front, year)) + ggtitle("Front seat drivers death according to year of law active/inactive") + theme(plot.title = element_text(face="bold", size=15, hjust=0))
+#the color of the dots is determined with the lawChar which is the binary variable of law = 0 or 1
+# The y-axis limits are set to 1965 to 1985 after taking the look at head(dfSeatbelts$year) and tail(dfSeatbelts$year)
+frontYear + geom_point(aes(colour = factor(lawChar))) + scale_y_continuous(limits = c (1965, 1985))
+```
+Next idea was to see the proportion of death rate for drivers and rear seat passengers after the law was enabled cause it surely affected the driver and front seat passenger death rate
+After plotting the data, we can see the blue lines peak denoting that the seatbelt law surely affected the death casualties for even the rear seat passengers.
+```{r}
+proportionDriverRear <- dfSeatbelts$rear/dfSeatbelts$drivers # calculation of the ratio of rear and drivers
+proportionFrontRearLaw <- ggplot(dfSeatbelts, aes(time, proportionDriverRear)) + ggtitle("Proportion of drivers and rear seat passengers")
+proportionFrontRearLaw + geom_line(aes(colour = factor(lawChar))) + scale_x_continuous(limits = c(1968, 1985))
+```
+
+After analyzing death rates of passengers seated in different seats in a car, next thing to maybe find out when did the accidents normally happen as we have the data on drivers, kms to see per kms driven and time (yearly and month altogether)
+After plotting the graph, month wise, most accidents happened during winter time and lesser during summer since we see a low drop during April to say, August and then rise again after that. 
+```{r}
+#To add in a month column
+dfSeatbelts$month <- round(12*(dfSeatbelts$time - dfSeatbelts$year))
+accidentTime <- ggplot(dfSeatbelts,aes(month, drivers/kms)) + ggtitle("approximation of time of accidents, distance wise")
+accidentTime + geom_line() + scale_y_continuous(limits = c(0.05, 0.24)) + scale_x_continuous(limits = c(0, 12.5))
+```
