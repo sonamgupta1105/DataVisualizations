@@ -25,12 +25,6 @@ plot(cars)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-
-## Objectives
-
-The objectives of this problem set is to orient you to a number of activities in `R`.  And to conduct a thoughtful exercise in appreciating the importance of data visualization.  For each question create a code chunk or text response that completes/answers the activity or question requested. Finally, upon completion name your final output `.html` file as: `Sonam_Gupta_ANLY512-50_LTSP2016.html` and upload it to the "Problem Set 1"" assignment on Moodle.
-
-
 ## Questions
 
 1. Anscombes quartet is a set of 4 $x,y$ data sets that were published by *Francis Anscombe* in a 1973 paper [*Graphs in statistical analysis*](https://www.jstor.org/stable/2682899?seq=1#page_scan_tab_contents).  For this first question load the `anscombe` data that is part of the `library(datasets)` in `R`.  And assign that data to a new object called `data`.
