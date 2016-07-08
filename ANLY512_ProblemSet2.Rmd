@@ -1,0 +1,77 @@
+---
+title: "ANLY 512 - Problem Set 2"
+author: "Sonam Gupta"
+date: '`r Sys.Date()`'
+output: html_document
+subtitle: Visualizing Movie's
+---
+
+
+## Objectives
+
+The objectives of this problem set is to gain experience working with data visualization as a tool for understanding unfamiliar data. To do this I want you to submit four *vis* that reveal something interesting about either the included `movies.csv` dataset.  For each *vis*, include the code you used to create the plot (`echo=TRUE`), and a one paragraph description of what you found interesting.  In most analyses the first plot you try will not be the most informative and you will need to make multiple improvements to get a polished plot. To show this process, for one of your 4 *vis*, provide 3-5 iterations that lead you to the final plot.  
+
+Finally, upon completion name your final output `.html` file as: `Sonam-Gupta_PS2_ANLY12-50_Summer2016.html` and upload it to the "Problem Set 2"" assignment on Moodle.
+
+
+## My Example
+
+All the visualizations are for Title.type = Feature Films. I have used the same packages as mentioned in the example you had given. 
+
+
+### Data Import & Cleanup
+```{r, echo=TRUE}
+library(ggplot2)
+library(dplyr)
+movie_data <- read.csv("D:/HbgUniv/Summer2016/DataVisual512/movie_data.csv")
+#dfMovies <- data.frame("movie_data")
+#creating the movies dataframe
+dfMoviesFeatureFilm <- subset(movie_data, movie_data$Title.type == "Feature Film")
+
+#Vis1 that plots imdb-ratings for feature films excluding the missing values
+dfMoviesFeatureFilmRating <- subset(dfMoviesFeatureFilm, dfMoviesFeatureFilm$IMDb.Rating != "")
+plotRatingVis1 <- ggplot(dfMoviesFeatureFilm, aes_(x = dfMoviesFeatureFilm$IMDb.Rating))
+plotRatingVis1 + geom_bar(stat = "count", fill = "coral3")
+
+```
+In this plot, the notable information about the feature films is that, most of the movies are rated between 6.0 to 8.0, few below 6.0 and few above than 8.0, almost forming a bell curve for normal distribution. So we can conclude that the feature films present in the dataset, falls between 6.0-8.0 IMDb ratings. 
+
+# Vis2 This visualization has 2-3 iterations
+#Plotting heatmap for finding relation between IMDb Rating and number of IMDb votes-iteration 1
+This is first attempt to generate a heat map, preferred over creating a scatter plot since there are lot of data points to be plotted for votes. The idea behind the map was to see if the relation between the IMDb ratings and votes is significant and appropriate. After looking at the map, we can tell the number of votes are according to the ratings. This plot needed revisions since the votes needed to be binned as they couldn't fit on the X-axis. Referred: http://datascienceplus.com/building-heatmaps-in-r/ 
+
+```{r, echo=TRUE}
+imdbRatingVotes <- ggplot(dfMoviesFeatureFilm, aes(x = dfMoviesFeatureFilm$X..of.IMDb.votes, y = dfMoviesFeatureFilm$IMDb.Rating)) + geom_tile(aes(fill = dfMoviesFeatureFilm$IMDb.Rating), color = 'red') +scale_fill_gradient(name = 'Relation of IMDb votes and ratings for Feature films', low = 'yellow', high = 'red') + theme(axis.title.y = element_blank())
+imdbRatingVotes
+```
+
+#Vis 2 -- iteration 2
+This iteration then created a better looking heatmap which is visually understandable to realize the fact that the films that has higher rating has higher number of votes.  
+```{r, echo = TRUE}
+#Binning the number of votes with x-axis labels messed up
+votes <- dfMoviesFeatureFilm$X..of.IMDb.votes
+binsVotes <- 20
+cutpointsVotesRating <- quantile(votes, (0:binsVotes)/binsVotes, na.rm = TRUE)
+binned <- cut(votes, cutpointsVotesRating, include.lowest = TRUE)
+imdbRatingVotes <- ggplot(dfMoviesFeatureFilm, aes(x = binned, y = dfMoviesFeatureFilm$IMDb.Rating)) + geom_tile(aes(fill = IMDb.Rating), color = 'red') +scale_fill_gradient(name = 'Relation of IMDb votes and ratings for Feature films', low = 'yellow', high = 'red') + theme(axis.title.y = element_blank())
+imdbRatingVotes
+```
+
+#Vis 2 -- iteration 3
+This revision was to fix the labels of X-axis 
+```{r, echo = TRUE}
+#Binning the number of votes with 90degree labels for x-axis
+votes <- dfMoviesFeatureFilm$X..of.IMDb.votes
+binsVotes <- 20
+cutpointsVotesRating <- quantile(votes, (0:binsVotes)/binsVotes, na.rm = TRUE)
+binned <- cut(votes, cutpointsVotesRating, include.lowest = TRUE)
+imdbRatingVotes <- ggplot(dfMoviesFeatureFilm, aes(x = binned, y = dfMoviesFeatureFilm$IMDb.Rating)) + geom_tile(aes(fill = IMDb.Rating), color = 'red') +scale_fill_gradient(name = 'Relation of IMDb votes and ratings for Feature films', low = 'yellow', high = 'red') + theme(axis.text.x = element_text(angle = 90, hjust =1 , vjust = 0.5),axis.title.y = element_blank())
+imdbRatingVotes
+```
+
+#Vis 3 
+Plotting a scatter plot between Rotten tomato and IMDb ratings. The darker the points on the graph, lesser are the ratings. The dataset is very messy and has a lot of missing values for rotten tomato ratings as we see a straight line of points denoting that. The labels on the X-axis are not sorted but are in the order as they are in the dataset.
+```{r, echo = TRUE}
+ratingsIMDBTomato <- ggplot(dfMoviesFeatureFilm, aes(x = Rotten.Tom., y = IMDb.Rating)) + geom_point(aes(color = IMDb.Rating)) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+ratingsIMDBTomato
+```
