@@ -12,13 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Rmarkdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com> and be sure to download the [**Rmarkdown Cheatsheet**](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) developed by Rstudio.  A more detailed reference guide to Rmarkdown can be obtained [here](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
-
-Rmarkdown is run on a package called `knitr()`.  `knitr()` is a powerful tool for creating reports and summaries of your quantiative research, and it is an important part of a **reproducible research** toolbox.  The `Knitr` package was developed by [Yihui Xie](http://yihui.name/knitr/) a statistics Ph.D. who now works at Rstudio.  We will discuss the subject of **reproducible research** in greater depth in two weeks.  But for now we are simply going to get comfortable with the primary reproducible research tool for `R` which is the `knitr` package.  
-
-Since many of you are using **Rstudio** you will benefit from the tight integration which the Rstudio interface has with the `knitr` package.  For instance in the toolbar above the text editor quadrant of the Rstudio interface you will see a "Knit" button.  That essentially executes `knitr` package commands in the background allowing the user to create reports and package output without having to execute commands in the `R` console. A great resource for more details on the `knitr` package is [knitr in a knutshell](http://kbroman.org/knitr_knutshell/) by [Karl Browman](http://kbroman.org/), or for a longer exposition you could read
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r}
 summary(cars)
