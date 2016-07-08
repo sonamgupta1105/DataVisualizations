@@ -6,18 +6,7 @@ output: html_document
 subtitle: Visualizing Movie's
 ---
 
-
-## Objectives
-
-The objectives of this problem set is to gain experience working with data visualization as a tool for understanding unfamiliar data. To do this I want you to submit four *vis* that reveal something interesting about either the included `movies.csv` dataset.  For each *vis*, include the code you used to create the plot (`echo=TRUE`), and a one paragraph description of what you found interesting.  In most analyses the first plot you try will not be the most informative and you will need to make multiple improvements to get a polished plot. To show this process, for one of your 4 *vis*, provide 3-5 iterations that lead you to the final plot.  
-
-Finally, upon completion name your final output `.html` file as: `Sonam-Gupta_PS2_ANLY12-50_Summer2016.html` and upload it to the "Problem Set 2"" assignment on Moodle.
-
-
-## My Example
-
 All the visualizations are for Title.type = Feature Films. I have used the same packages as mentioned in the example you had given. 
-
 
 ### Data Import & Cleanup
 ```{r, echo=TRUE}
