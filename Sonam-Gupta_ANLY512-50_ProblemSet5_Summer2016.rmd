@@ -1,0 +1,58 @@
+---
+title: "Sonam-Gupta_ANLY512-50_ProblemSet5_Summer2016"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+
+```{r setup, include=FALSE}
+# packages used
+library(flexdashboard)
+library(mlbench)
+library(ggplot2)
+library(plotly)
+
+#Converting the list into dataframe as the dataset type is a list
+data("PimaIndiansDiabetes")
+dfDiabetes <- as.data.frame(PimaIndiansDiabetes)
+
+```
+
+Column {.sidebar data-width=500}
+-----------------------------------------------------------------------
+Reference for dataset: https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes
+
+### To see diabetes is pos or neg according to blood pressure 
+
+```{r, fig.width=5, fig.height=4}
+bpDiabetes <- ggplot(dfDiabetes, aes(diabetes, pressure))
+bpDiabetes + geom_bar(stat = "identity", position = "identity")
+```
+
+Row {data-width=350}
+-----------------------------------------------------------------------
+### Blood pressure vs Age and to see what's the ratio for diabetes being pos or neg
+
+```{r, fig.width=8, fig.height=7}
+bpAgeDiabetes <- bpAgeDiabetes <- ggplot(dfDiabetes, aes(age, pressure, color = diabetes)) + scale_x_continuous(limits = c(19, 90)) + scale_y_continuous(limits = c(5, 125))
+bpAgeDiabetes + geom_point()
+```
+
+### Tabular visualization of dataset (first 6 rows)
+```{r} 
+sampleDiabetesData <- head(dfDiabetes) # tabular visualization just for head of the dataset
+knitr::kable(sampleDiabetesData)
+```
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### Glucose-level vs Insulin-level
+
+```{r}
+glucInsulin <- ggplot(dfDiabetes, aes(glucose, insulin, colour = diabetes)) + scale_x_continuous(limits = c(64, 205)) + scale_y_continuous(limits = c(10.5, 848)) + geom_point()
+gg <- ggplotly(glucInsulin)
+gg
+```
+
