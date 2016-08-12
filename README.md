@@ -17,6 +17,5 @@ Quantified Self is the final project for this course.
   -hoursOnResearch
   -minsInNovelReading
   -workout
-
 -Tried to find correlation between the variables and plotted the graph accordingly
 ---------------------
