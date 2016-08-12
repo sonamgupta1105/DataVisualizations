@@ -5,7 +5,7 @@ Trying to acquire new skills in data visualization during my last semester at HU
 ---------------------
 Quantified Self is the final project for this course.
 -Created the dataset programmatically and using random number generation for filling the data fields for the columns
-
+file:///D:/HbgUniv/Summer2016/DataVisual512/quantifiedSelf/quantifiedSelfFinal.html
 - The dashboard and graphs is made by using the following packages in RMarkdown:
     -flexdashboard
     -ggplot2
