@@ -1,0 +1,166 @@
+---
+title: "Quantified Self"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+# Creating an empty dataframe
+newSelfDf <- data.frame(cupsOfCoffee = integer(0), hoursSleep = integer(0), hoursInSocialMedia = integer(0), hoursOnResearch = numeric(0), minsInNovelReading = numeric(0), workout = integer(0))
+
+# loop to create rows
+for(i in 1:365)
+{
+	# get cupsOfCoffee
+	cupsOfCoffee = round(rnorm(1, 2, 0.5))
+	
+	# workout yes or no
+	if(runif(1) < 0.9)
+	{
+		workout = 1
+	}
+	else
+	{
+		workout = 0
+	}
+	
+	
+	# get hoursSleep
+	if ( runif(1) < 0.85)
+	{
+		meanHrs = 7.5
+		stdHrs = 0.75
+		if (cupsOfCoffee >= 3)
+		{
+			meanHrs = meanHrs - runif(1, min = 1, max = 1.5)
+		}
+		else if (cupsOfCoffee == 2)
+		{
+			meanHrs = meanHrs - runif(1, min = 0.75, max = 1)
+		}
+		else
+		{
+			stdHrs = 0.25
+		}
+		
+		if (workout == 0)
+		{
+			meanHrs = meanHrs - runif(1, min = 0.25, max = 1)
+		}
+		hoursSleep = round(rnorm(1, meanHrs, stdHrs) * 2) / 2
+	}
+	else
+	{
+		meanHrs = 4.5
+		stdHrs = 0.5
+		if (cupsOfCoffee >= 3)
+		{
+			meanHrs = meanHrs - runif(1, min = 1, max = 1.5)
+		}
+		else if (cupsOfCoffee == 2)
+		{
+			meanHrs = meanHrs - runif(1, min = 0.75, max = 1)
+		}
+		else
+		{
+			stdHrs = 0.25
+		}
+		hoursSleep = round(rnorm(1, meanHrs, stdHrs) * 2) / 2
+	}
+	
+	# get hoursInSocialMedia, research, novel reading
+	if (workout == 1)
+	{
+		minSocialMedia = 1
+		maxSocialMedia = 2
+		minResearch = 5
+		maxResearch = 9
+	}
+	else
+	{
+		minSocialMedia = 2
+		maxSocialMedia = 4
+		minResearch = 3
+		maxResearch = 7
+	}
+	
+	hoursInSocialMedia = sample(minSocialMedia:maxSocialMedia, 1, replace = TRUE)
+	hoursOnResearch = sample(minResearch:maxResearch, 1, replace = TRUE)
+	
+	if (hoursOnResearch >= 6 )
+	{
+		minNovel = 15 
+		maxNovel = 60
+	}
+	else
+	{
+		minNovel = 45
+		maxNovel = 120
+	}
+	minsInNovelReading =  ceiling(    sample(minNovel:maxNovel, 1, replace = TRUE)     /15)*15    
+		
+	rowsDataset <- c(cupsOfCoffee, hoursSleep, hoursInSocialMedia, hoursOnResearch, minsInNovelReading, workout)
+	newSelfDf <- rbind(newSelfDf, rowsDataset)
+}
+
+names(newSelfDf) <- c("cupsOfCoffee", "hoursSleep", "hoursInSocialMedia", "hoursOnResearch", "minsInNovelReading", "workout")
+
+```
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Average day pie chart
+
+```{r}
+colNames = c("cupsOfCoffee", "hoursSleep", "hoursInSocialMedia", "hoursOnResearch", "minsInNovelReading", "workout", "otherTasks")
+meanCoffee = mean(newSelfDf$cupsOfCoffee)
+meanSleep = mean(newSelfDf$hoursSleep)
+meanMedia = mean(newSelfDf$hoursInSocialMedia)
+meanResearch = mean(newSelfDf$hoursOnResearch)
+meanNovel = mean(newSelfDf$minsInNovelReading) / 60.0
+meanWorkout = mean(newSelfDf$workout)
+
+totalMeans = meanCoffee + meanSleep + meanMedia + meanResearch + meanNovel + meanWorkout
+meanOtherTasks = 24 - totalMeans
+
+valuesForPieChart = c(meanCoffee, meanSleep, meanMedia, meanResearch, meanNovel, meanWorkout, meanOtherTasks)
+plot_ly(newSelfDf, labels = colNames, values = valuesForPieChart, type = "pie") %>%
+  layout(title = "What's my day like?")
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Analyzing how much sleep I get depending on cups of coffee I drink in a day
+
+```{r}
+scatterCoffeeSleep <- ggplot(newSelfDf, aes(x = cupsOfCoffee, y = hoursSleep, group = cupsOfCoffee )) + geom_boxplot()
+scatterCoffeeSleep
+ggplotly(scatterCoffeeSleep)
+```
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+###Mostly my time of 9 hours is spent of research and 1 hour of novel reading.Reading is mostly in between 30mins to 1 hour while mostly research is 6-9 hours. Negative correlation is seen, hoursOnResearch goes down and minsInNovelReading goes up.
+
+
+```{r}
+heatResearchNovel <- ggplot(newSelfDf, aes(x = minsInNovelReading, y = hoursOnResearch)) + stat_binhex() + scale_x_continuous(breaks = seq(0, 120, by = 15)) + scale_fill_gradient(name = "Frequency")
+heatResearchNovel
+```
+
+### Hours spent on research on a daily basis. So after looking at plot, I study for 5.5 hours 
+
+```{r}
+research <- ggplot(newSelfDf, aes(hoursOnResearch)) + labs(y = "Number of Days") + ggtitle("Hours Spent on Research")
+research + geom_bar() + scale_x_continuous(breaks = seq(3, 9, by = 1))
+```
+
